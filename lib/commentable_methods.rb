@@ -24,10 +24,8 @@ module Juixe
         def find_comments_for(obj)
           commentable = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
 
-          Comment.find(:all,
-            :conditions => ["commentable_id = ? and commentable_type = ? and published = true", obj.id, commentable],
-            :order => "created_at DESC"
-          )
+          Comment.where("commentable_id = ? and commentable_type = ? and published = true", obj.id, commentable).
+              order("created_at DESC")
         end
 
         # Helper class method to lookup comments for
@@ -36,10 +34,8 @@ module Juixe
         def find_comments_by_user(user)
           commentable = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
 
-          Comment.find(:all,
-            :conditions => ["user_id = ? and commentable_type = ? and published = true", user.id, commentable],
-            :order => "created_at DESC"
-          )
+          Comment.where("user_id = ? and commentable_type = ? and published = true", user.id, commentable).
+              order("created_at DESC")
         end
       end
 
@@ -47,10 +43,8 @@ module Juixe
       module InstanceMethods
         # Helper method to sort comments by date
         def comments_ordered_by_submitted
-          Comment.find(:all,
-            :conditions => ["commentable_id = ? and commentable_type = ? and published = true", id, self.class.name],
-            :order => "created_at DESC"
-          )
+          Comment.where("commentable_id = ? and commentable_type = ? and published = true", id, self.class.name).
+            order("created_at DESC")
         end
 
         # Helper method that defaults the submitted time.
@@ -68,19 +62,20 @@ module Juixe
 
         # Only get the comments visible to the user
         def visible_comments(user, params)
+          params.reverse_merge!({:order => 'DESC', :page => 1, :per_page => 10, :limit => 10})
           # this only makes sense for moderated comments
           if user && self.respond_to?(:moderated_comments) && self.moderated_comments
             if (self.respond_to?(:owner) && self.owner == user) || (self.respond_to?(:comment_moderator?) && self.comment_moderator?(user)) || user.admin?
-              return comments.find(:all, params)
+              return comments.order(params[:order]).limit(params[:limit]).paginate(:page => params[:page], :per_page => params[:per_page])
             else
               if self.moderated_comments == 1
-                return comments.published_or_owned(user).find(:all, params)
+                return comments.published_or_owned(user).order(params[:order]).limit(params[:limit]).paginate(:page => params[:page], :per_page => params[:per_page])
               else
-                return comments.find(:all, {:limit => 0, :page => {:size => 10}})
+                return comments.limit(0)
               end
             end
           end
-          return comments.published.find(:all, params)
+          return comments.published..order(params[:order]).limit(params[:limit]).paginate(:page => params[:page], :per_page => params[:per_page])
         end
 
       end

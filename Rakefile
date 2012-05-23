@@ -1,10 +1,9 @@
 require 'rubygems'
 require 'rake/gempackagetask'
-require 'rake/testtask'
 
 PLUGIN = "acts_as_commentable"
 GEM = "acts_as_commentable"
-GEM_VERSION = "3.0.1"
+GEM_VERSION = "2.1.1"
 EMAIL = "unknown@juixe.com"
 HOMEPAGE = "http://www.juixe.com/techknow/index.php/2006/06/18/acts-as-commentable-plugin/"
 SUMMARY = "Plugin/gem that provides comment functionality"
@@ -14,7 +13,7 @@ spec = Gem::Specification.new do |s|
   s.version = GEM_VERSION
   s.platform = Gem::Platform::RUBY
   s.has_rdoc = false
-  s.extra_rdoc_files = ["README.rdoc", "MIT-LICENSE"]
+  s.extra_rdoc_files = ["README", "MIT-LICENSE"]
   s.summary = SUMMARY
   s.description = s.summary
   s.author = 'Cosmin Radoi, Jack Dempsey, Xelipe, Chris Eppstein'
@@ -26,7 +25,7 @@ spec = Gem::Specification.new do |s|
 
   s.require_path = 'lib'
   s.autorequire = GEM
-  s.files = %w(MIT-LICENSE README.rdoc) + Dir.glob("{generators,lib,tasks}/**/*") + %w(init.rb install.rb)
+  s.files = %w(MIT-LICENSE README) + Dir.glob("{generators,lib,tasks}/**/*") + %w(init.rb install.rb)
 end
 
 
@@ -45,12 +44,4 @@ task :gemspec do
     f.write(spec.to_ruby)
   end
 end
-
-desc 'Test the acts_as_commentable plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
-end
-
 

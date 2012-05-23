@@ -16,9 +16,7 @@ module ActsAsCommentable
       comment_model.scope :limit, lambda {|lim| limit(lim)}
       comment_model.scope :owner, lambda { |user| where(:user_id => user.id)}
       comment_model.scope :published_or_owned, lambda { |user| where("published = true or user_id = ?", user ? user.id : nil)}
-    end
 
-    module Finders
       # Helper class method to lookup all comments assigned
       # to all commentable types for a given user.
       def find_comments_by_user(user)

@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 PLUGIN = "acts_as_commentable"
 GEM = "acts_as_commentable"
@@ -29,9 +29,9 @@ spec = Gem::Specification.new do |s|
 end
 
 
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
-end
+#Rake::GemPackageTask.new(spec) do |pkg|
+#  pkg.gem_spec = spec
+#end
 
 desc "Install the gem"
 task :install => [:package] do

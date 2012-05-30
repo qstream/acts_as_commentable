@@ -66,13 +66,13 @@ module ActsAsCommentable
           return comments.order(params[:order]).limit(params[:limit]).paginate(:page => params[:page], :per_page => params[:per_page])
         else
           if self.moderated_comments == 1
-            return comments.published_or_owned(user).order(params[:order]).limit(params[:limit]).paginate(:page => params[:page], :per_page => params[:per_page])
+            return comment.where("published = true or user_id = ?", user).order(params[:order]).limit(params[:limit]).paginate(:page => params[:page], :per_page => params[:per_page])
           else
-            return comments.limit(0)
+            return comment.limit(0)
           end
         end
       end
-      return comments.published..order(params[:order]).limit(params[:limit]).paginate(:page => params[:page], :per_page => params[:per_page])
+      return comments.where(:published => true).order(params[:order]).limit(params[:limit]).paginate(:page => params[:page], :per_page => params[:per_page])
     end
 
   end

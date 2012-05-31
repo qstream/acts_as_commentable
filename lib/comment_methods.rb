@@ -5,7 +5,7 @@ module ActsAsCommentable
   #   in_order: Returns comments in the order they were created (created_at ASC).
   #   recent: Returns comments by how recently they were created (created_at DESC).
   #   limit(N): Return no more than N comments.
-  module Comment
+  module CommentModel
 
     def self.included(comment_model)
       comment_model.extend Finders
